@@ -587,6 +587,31 @@ function WorkView({ setIsGlobalChatOpen }: { setIsGlobalChatOpen: (open: boolean
                   </button>
                 </div>
               </div>
+              {/* AI 원스톱 계약 생성 Banner - Moved to top */}
+              <div
+                onClick={() => setIsContractModalOpen(true)}
+                className="p-8 bg-point rounded-[40px] text-white shadow-2xl shadow-point/30 relative overflow-hidden group hover:scale-[1.01] transition-all cursor-pointer flex flex-col md:flex-row items-center justify-between gap-6"
+              >
+                <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-white/10 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-1000" />
+                <div className="relative z-10 flex items-center space-x-6">
+                  <div className="w-16 h-16 rounded-[24px] bg-white/20 flex items-center justify-center backdrop-blur-md shadow-inner">
+                    <Sparkles size={32} />
+                  </div>
+                  <div>
+                    <h4 className="font-black text-2xl tracking-tighter">AI 원스톱 계약 생성</h4>
+                    <p className="text-sm text-white/80 mt-1 font-medium max-w-md leading-relaxed">복잡한 조항 구성부터 법무 검토용 초안까지, AI가 즉시 제안합니다.</p>
+                  </div>
+                </div>
+                <div className="relative z-10 w-full md:w-auto">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setIsContractModalOpen(true); }}
+                    className="w-full md:px-10 py-5 bg-white text-point rounded-3xl font-black text-base shadow-xl active:scale-95 transition-all flex items-center justify-center space-x-2"
+                  >
+                    <Plus size={20} />
+                    <span>신규 계약 제안하기</span>
+                  </button>
+                </div>
+              </div>
 
               <section className="grid grid-cols-2 md:grid-cols-5 gap-4">
                 <StatBox icon={<FileText className="text-blue-500" size={18} />} label="내부 결제 진행" value="100건" />
@@ -692,23 +717,6 @@ function WorkView({ setIsGlobalChatOpen }: { setIsGlobalChatOpen: (open: boolean
                     </div>
                   </section>
 
-                  {/* Quick Creation Section */}
-                  <div className="p-6 bg-point rounded-[32px] text-white shadow-xl shadow-point/30 relative overflow-hidden group hover:scale-[1.02] transition-all cursor-pointer">
-                    <div className="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                    <div className="relative z-10">
-                      <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center mb-4 backdrop-blur-sm">
-                        <Sparkles size={24} />
-                      </div>
-                      <h4 className="font-black text-lg tracking-tight">AI 원스톱 계약 생성</h4>
-                      <p className="text-xs text-white/70 mt-1 font-medium leading-relaxed">복잡한 조항 구성, AI가 실무에 바로 쓰는 초안을 작성합니다.</p>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); setIsContractModalOpen(true); }}
-                        className="mt-6 w-full py-4 bg-white text-point rounded-2xl font-black text-sm shadow-xl active:scale-95 transition-all"
-                      >
-                        신규 계약 제안하기
-                      </button>
-                    </div>
-                  </div>
                 </div>
               </div>
 
@@ -1819,41 +1827,6 @@ function QuickMenuButton({ label, onClick }: { label: string, onClick?: () => vo
   );
 }
 
-function WorkCard({ title, icon, description, status }: any) {
-  return (
-    <div className="bg-white dark:bg-zinc-900 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-3">
-      <div className="flex items-center space-x-2">
-        {icon}
-        <h3 className="font-bold text-sm tracking-tight">{title}</h3>
-      </div>
-      <p className="text-zinc-500 dark:text-zinc-400 text-xs">{description}</p>
-      <div className="inline-block px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold uppercase tracking-wider text-zinc-500">
-        {status}
-      </div>
-    </div>
-  );
-}
-
-function WorkListItem({ title, date, status, priority, onClick }: any) {
-  return (
-    <div
-      onClick={onClick}
-      className="flex items-center justify-between p-4 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors cursor-pointer group"
-    >
-      <div className="flex items-center space-x-3">
-        {priority === 'high' && <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />}
-        <div>
-          <h4 className="text-sm font-semibold group-hover:text-point transition-colors">{title}</h4>
-          <p className="text-[10px] text-zinc-400 mt-0.5">{date}</p>
-        </div>
-      </div>
-      <div className={`text-[10px] font-bold px-2 py-1 rounded-md ${status === '조치중' ? 'bg-amber-100 text-amber-600 dark:bg-amber-900/30' : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800'
-        }`}>
-        {status}
-      </div>
-    </div>
-  );
-}
 
 function LibraryCard({ icon, title, subtitle }: any) {
   return (
@@ -1899,31 +1872,6 @@ function StatBox({ icon, label, value, onClick }: any) {
 
 // --- Specific Category Components ---
 
-function DeployItem({ version, desc, date, status }: any) {
-  return (
-    <div className="flex items-center justify-between p-3 rounded-xl border border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
-      <div className="flex items-center space-x-3">
-        <div className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-[10px] font-bold text-zinc-500">
-          {version.split('.')[0]}
-        </div>
-        <div>
-          <p className="text-xs font-bold">{desc}</p>
-          <p className="text-[10px] text-zinc-400">{version} · {date}</p>
-        </div>
-      </div>
-      <span className="text-[10px] font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">{status}</span>
-    </div>
-  );
-}
-
-function DevToolBtn({ label, desc }: any) {
-  return (
-    <button className="flex flex-col items-start p-4 rounded-xl border border-zinc-100 dark:border-zinc-800 hover:border-point/50 hover:bg-point/5 transition-all text-left group">
-      <span className="text-xs font-bold group-hover:text-point transition-colors">{label}</span>
-      <span className="text-[10px] text-zinc-400">{desc}</span>
-    </button>
-  );
-}
 
 function LegalListItem({ title, status, date, sender }: any) {
   return (
@@ -1940,49 +1888,4 @@ function LegalListItem({ title, status, date, sender }: any) {
   );
 }
 
-function GuideItem({ title }: any) {
-  return (
-    <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 cursor-pointer hover:border-point/30 transition-colors">
-      <span className="text-xs font-medium">{title}</span>
-      <ChevronRight size={14} className="text-zinc-300" />
-    </div>
-  );
-}
 
-function HRScheduleItem({ name, type, date }: any) {
-  return (
-    <div className="flex items-center justify-between p-3 rounded-xl border border-zinc-100 dark:border-zinc-800">
-      <div className="flex items-center space-x-3">
-        <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-[10px] font-bold">
-          {name[0]}
-        </div>
-        <div>
-          <p className="text-xs font-bold">{name}</p>
-          <p className="text-[10px] text-zinc-400">{date}</p>
-        </div>
-      </div>
-      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${type === '연차' ? 'bg-point/10 text-point' : 'bg-blue-100 text-blue-600'}`}>
-        {type}
-      </span>
-    </div>
-  );
-}
-
-function DevGuideCard({ icon, title, desc, tags, color }: any) {
-  return (
-    <div className="p-6 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-3xl hover:border-point/40 hover:shadow-xl transition-all cursor-pointer group flex flex-col h-full">
-      <div className={`w-12 h-12 rounded-2xl bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform ${color}`}>
-        {icon}
-      </div>
-      <h4 className="font-bold text-sm mb-2 group-hover:text-point transition-colors">{title}</h4>
-      <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed flex-1">{desc}</p>
-      <div className="mt-5 flex flex-wrap gap-2">
-        {tags.map((tag: string) => (
-          <span key={tag} className="text-[9px] font-black uppercase tracking-widest bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded-md text-zinc-400">
-            {tag}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
