@@ -57,7 +57,12 @@ import {
   Smartphone,
   ShieldCheck,
   Sun,
-  Moon
+  Moon,
+  Camera,
+  CheckSquare,
+  Radio,
+  ListTodo,
+  Server
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ChatInterface from '@/components/ChatInterface';
@@ -487,6 +492,34 @@ function WorkView({ setIsGlobalChatOpen }: { setIsGlobalChatOpen: (open: boolean
     serviceDetail: '소프트웨어 개발 및 현장 운영 지원 전반'
   });
 
+  // Field Operations States
+  const [waitingCount, setWaitingCount] = useState(42);
+  const [isAnalyzingPhoto, setIsAnalyzingPhoto] = useState(false);
+  const [isVoiceInquiryActive, setIsVoiceInquiryActive] = useState(false);
+  const [activeChecklist, setActiveChecklist] = useState<'printer' | 'network' | 'server' | null>(null);
+  const [fieldLogs, setFieldLogs] = useState([
+    { id: 1, time: '11:45', text: '입장 게이트 #2 네트워크 복구 완료', type: 'system' },
+    { id: 2, time: '11:40', text: 'C구역 혼잡도 증가로 인한 스태프 2명 추가 배치', type: 'manual' },
+    { id: 3, time: '11:30', text: 'VIP 라운지 명함 프린터 용지 보충', type: 'manual' }
+  ]);
+
+  useEffect(() => {
+    // Simulate real-time data change for waiting count
+    const interval = setInterval(() => {
+      setWaitingCount(prev => {
+        const delta = Math.floor(Math.random() * 5) - 2;
+        return Math.max(0, prev + delta);
+      });
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const addFieldLog = (text: string, type: 'manual' | 'system' = 'manual') => {
+    const now = new Date();
+    const time = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+    setFieldLogs(prev => [{ id: Date.now(), time, text, type }, ...prev]);
+  };
+
   const handleAiSmartFill = () => {
     if (!aiBrief) return;
     setIsAiGenerating(true);
@@ -573,100 +606,261 @@ function WorkView({ setIsGlobalChatOpen }: { setIsGlobalChatOpen: (open: boolean
           className="space-y-6"
         >
           {activeCategory === 'field' && (
-            <>
-              {/* Overview Stats */}
-              <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <StatBox icon={<Activity className="text-emerald-500" size={18} />} label="가동 중" value="12개소" />
-                <StatBox icon={<Loader2 className="text-amber-500 animate-spin" size={18} />} label="진행 중" value="3건" />
-                <StatBox icon={<MessageSquare className="text-point" size={18} />} label="미결 이슈" value="2건" />
-                <StatBox
-                  icon={<Plus size={18} />}
-                  label="새 도구"
-                  value="추가"
-                  onClick={() => handleQuickAction('도구 추가')}
-                />
+            <div className="space-y-6">
+              {/* 1. Real-time Dashboard (Status) */}
+              <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className={`p-6 rounded-[32px] border transition-all duration-500 flex flex-col justify-between h-40 shadow-xl overflow-hidden relative ${waitingCount >= 50 ? 'bg-red-500 border-red-600 text-white animate-pulse' : waitingCount >= 45 ? 'bg-amber-400 border-amber-500 text-zinc-900' : 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800'}`}>
+                  {waitingCount >= 50 && (
+                    <div className="absolute top-0 right-0 p-4">
+                      <AlertCircle size={24} className="animate-bounce" />
+                    </div>
+                  )}
+                  <div>
+                    <p className={`text-[10px] font-black uppercase tracking-widest ${waitingCount >= 45 ? 'text-white/80' : 'text-zinc-400'}`}>입장 대기 현황</p>
+                    <h4 className="text-3xl font-black mt-1">{waitingCount}<span className="text-sm font-bold ml-1">명</span></h4>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold">임계치: 50명</span>
+                    {waitingCount >= 50 && <span className="text-[10px] font-black bg-white/20 px-2 py-1 rounded-full backdrop-blur-sm">즉시 조정 필요</span>}
+                  </div>
+                </div>
+
+                <div className="p-6 rounded-[32px] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col justify-between h-40">
+                  <div>
+                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">장비 가동률</p>
+                    <h4 className="text-3xl font-black mt-1 text-emerald-500">98.2<span className="text-sm font-bold ml-1">%</span></h4>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="flex-1 h-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                      <div className="h-full bg-emerald-500 w-[98.2%]" />
+                    </div>
+                    <span className="text-[10px] font-bold text-zinc-400">Normal</span>
+                  </div>
+                </div>
+
+                <div className="p-6 rounded-[32px] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col justify-between h-40">
+                  <div>
+                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">실시간 혼잡도</p>
+                    <h4 className="text-3xl font-black mt-1">쾌적</h4>
+                  </div>
+                  <div className="flex items-center space-x-2 text-[11px] font-bold text-emerald-500">
+                    <Activity size={14} />
+                    <span>안정적인 흐름 유지 중</span>
+                  </div>
+                </div>
               </section>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Site Issues */}
-                <section className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden shadow-sm">
-                  <div className="p-5 border-b border-zinc-100 dark:border-zinc-800 flex justify-between items-center bg-zinc-50/50 dark:bg-zinc-800/20">
-                    <h3 className="font-bold flex items-center space-x-2">
-                      <Activity size={18} className="text-red-500" />
-                      <span>현장 이슈 현황</span>
-                    </h3>
-                    <span className="text-[10px] font-bold bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 px-2 py-0.5 rounded-full">긴급 2</span>
+                {/* 2. AI Urgent Support (AI Core) */}
+                <section className="bg-zinc-900 rounded-[40px] p-8 text-white relative overflow-hidden shadow-2xl">
+                  <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-point/30 rounded-full blur-3xl" />
+                  <div className="relative z-10 space-y-6">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 rounded-2xl bg-point flex items-center justify-center shadow-lg shadow-point/20">
+                        <Bot size={20} />
+                      </div>
+                      <h3 className="text-xl font-black tracking-tighter">AI 긴급 지원</h3>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <button
+                        onClick={() => {
+                          setIsAnalyzingPhoto(true);
+                          setTimeout(() => {
+                            setIsAnalyzingPhoto(false);
+                            setActiveActionToast("분석 결과: '헤드 청소 필요' - 우측 퀵 카드 참조");
+                          }, 2500);
+                        }}
+                        className="p-5 bg-white/10 hover:bg-white/20 rounded-3xl border border-white/10 transition-all text-left flex flex-col space-y-3 group"
+                      >
+                        <Camera size={20} className="text-point group-hover:scale-110 transition-transform" />
+                        <div>
+                          <p className="text-sm font-black">에러 분석</p>
+                          <p className="text-[10px] text-white/50 font-medium">사진 촬영 시 해결법 제시</p>
+                        </div>
+                      </button>
+
+                      <button
+                        onMouseDown={() => setIsVoiceInquiryActive(true)}
+                        onMouseUp={() => {
+                          setIsVoiceInquiryActive(false);
+                          addFieldLog("현장 관리자 음성 보고: 'A구역 조치 완료했어'", 'manual');
+                          setActiveActionToast("음성 기록 및 공유 완료");
+                        }}
+                        className={`p-5 rounded-3xl border transition-all text-left flex flex-col space-y-3 group ${isVoiceInquiryActive ? 'bg-red-500 border-red-400' : 'bg-white/10 border-white/10 hover:bg-white/20'}`}
+                      >
+                        <Radio size={20} className={`${isVoiceInquiryActive ? 'text-white animate-pulse' : 'text-emerald-400 group-hover:scale-110 transition-transform'}`} />
+                        <div>
+                          <p className="text-sm font-black">음성 문의</p>
+                          <p className="text-[10px] text-white/50 font-medium">누르고 말하여 정보 검색</p>
+                        </div>
+                      </button>
+                    </div>
+
+                    {isAnalyzingPhoto && (
+                      <div className="mt-4 p-4 bg-white/5 rounded-2xl border border-white/10 flex items-center space-x-3">
+                        <Loader2 size={16} className="animate-spin text-point" />
+                        <span className="text-xs font-bold text-white/70">명찰 프린터 에러 코드 분석 중...</span>
+                      </div>
+                    )}
                   </div>
-                  <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
-                    {issues.map((issue) => (
-                      <WorkListItem
-                        key={issue.id}
-                        title={issue.title}
-                        date={issue.date}
-                        status={issue.status}
-                        priority={issue.priority}
-                        onClick={() => setSelectedIssue(issue)}
-                      />
-                    ))}
-                  </div>
-                  <button className="w-full py-3 text-xs text-zinc-400 hover:text-point transition-colors border-t border-zinc-100 dark:border-zinc-800">
-                    이슈 전체보기
-                  </button>
                 </section>
 
-                {/* Schedule */}
-                <section className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden shadow-sm">
-                  <div className="p-5 border-b border-zinc-100 dark:border-zinc-800 flex justify-between items-center">
-                    <h3 className="font-bold flex items-center space-x-2">
-                      <Calendar size={18} className="text-point" />
-                      <span>오늘의 행사 스케줄</span>
-                    </h3>
+                {/* 3. Quick Help Cards (Quick Cards) */}
+                <section className="bg-white dark:bg-zinc-900 rounded-[40px] border border-zinc-200 dark:border-zinc-800 p-8 shadow-sm flex flex-col">
+                  <div className="flex items-center justify-between mb-8">
+                    <h3 className="text-xl font-black tracking-tighter">퀵 헬프 카드</h3>
+                    <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Essential Only</span>
                   </div>
-                  <div className="p-4 space-y-3">
-                    <div
-                      className="flex items-start space-x-3 p-3 rounded-xl bg-point/5 border border-point/10 cursor-pointer hover:bg-point/10 transition-colors"
-                      onClick={() => handleQuickAction('현대 모터쇼 스케줄')}
+                  <div className="space-y-3 flex-1">
+                    <button
+                      onClick={() => setActiveChecklist('printer')}
+                      className="w-full p-4 bg-zinc-50 dark:bg-zinc-800/50 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-100 dark:border-zinc-700/50 rounded-2xl flex items-center justify-between group transition-all"
                     >
-                      <div className="text-center min-w-[40px]">
-                        <p className="text-[10px] font-bold text-point uppercase">Feb</p>
-                        <p className="text-lg font-bold">20</p>
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 rounded-xl bg-white dark:bg-zinc-900 flex items-center justify-center text-zinc-400 group-hover:text-point shadow-sm">
+                          <CheckSquare size={16} />
+                        </div>
+                        <span className="text-sm font-black text-zinc-700 dark:text-zinc-300">프린터 대량 에러 조치</span>
                       </div>
-                      <div className="flex-1">
-                        <h4 className="text-sm font-bold">현대 모터쇼 사전 등록 운영</h4>
-                        <p className="text-xs text-zinc-500 mt-0.5">코엑스 B홀 | 09:00 - 18:00</p>
-                      </div>
-                    </div>
-                    <div
-                      className="flex items-start space-x-3 p-3 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors cursor-pointer"
-                      onClick={() => handleQuickAction('삼성 갤럭시 스케줄')}
+                      <ChevronRight size={16} className="text-zinc-300 group-hover:text-point transition-colors" />
+                    </button>
+
+                    <button
+                      onClick={() => setActiveChecklist('network')}
+                      className="w-full p-4 bg-zinc-50 dark:bg-zinc-800/50 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-100 dark:border-zinc-700/50 rounded-2xl flex items-center justify-between group transition-all"
                     >
-                      <div className="text-center min-w-[40px]">
-                        <p className="text-[10px] font-bold text-zinc-400 uppercase">Feb</p>
-                        <p className="text-lg font-bold text-zinc-400">20</p>
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 rounded-xl bg-white dark:bg-zinc-900 flex items-center justify-center text-zinc-400 group-hover:text-point shadow-sm">
+                          <Network size={16} />
+                        </div>
+                        <span className="text-sm font-black text-zinc-700 dark:text-zinc-300">현장 네트워크 긴급 복구</span>
                       </div>
-                      <div className="flex-1">
-                        <h4 className="text-sm font-bold">삼성 갤럭시 언팩 테스트</h4>
-                        <p className="text-xs text-zinc-500 mt-0.5">가산 본사 5F | 16:30 - 18:00</p>
+                      <ChevronRight size={16} className="text-zinc-300 group-hover:text-point transition-colors" />
+                    </button>
+
+                    <button
+                      onClick={() => setActiveChecklist('server')}
+                      className="w-full p-4 bg-zinc-50 dark:bg-zinc-800/50 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-100 dark:border-zinc-700/50 rounded-2xl flex items-center justify-between group transition-all"
+                    >
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 rounded-xl bg-white dark:bg-zinc-900 flex items-center justify-center text-zinc-400 group-hover:text-point shadow-sm">
+                          <Server size={16} />
+                        </div>
+                        <span className="text-sm font-black text-zinc-700 dark:text-zinc-300">서버 접속 원활성 체크</span>
                       </div>
-                    </div>
+                      <ChevronRight size={16} className="text-zinc-300 group-hover:text-point transition-colors" />
+                    </button>
                   </div>
                 </section>
               </div>
 
-              {/* Quick Admin Actions */}
-              <section className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6 shadow-sm">
-                <h3 className="font-bold mb-5 flex items-center space-x-2">
-                  <LayoutGrid size={18} className="text-zinc-400" />
-                  <span>현장 관리 도구</span>
-                </h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <AdminQuickBtn icon={<Mic size={20} />} label="방송 송출" color="bg-zinc-900" onClick={() => handleQuickAction('방송 송출')} />
-                  <AdminQuickBtn icon={<Loader2 size={20} />} label="시스템 체크" color="bg-emerald-500" onClick={() => handleQuickAction('시스템 체크')} />
-                  <AdminQuickBtn icon={<Activity size={20} />} label="로그 수집" color="bg-blue-500" onClick={() => handleQuickAction('로그 수집')} />
-                  <AdminQuickBtn icon={<Plus size={20} />} label="추가 메뉴" color="bg-zinc-400" onClick={() => handleQuickAction('추가 메뉴')} />
+              {/* 4. Field Logs (Timeline) */}
+              <section className="bg-white dark:bg-zinc-900 rounded-[40px] border border-zinc-200 dark:border-zinc-800 overflow-hidden shadow-sm">
+                <div className="p-8 border-b border-zinc-100 dark:border-zinc-800 flex justify-between items-center bg-zinc-50/50 dark:bg-zinc-800/20">
+                  <h3 className="text-xl font-black tracking-tighter flex items-center space-x-3">
+                    <History size={24} className="text-zinc-400" />
+                    <span>현장 타임라인 로그</span>
+                  </h3>
+                  <div className="px-4 py-1.5 bg-emerald-500/10 text-emerald-500 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center space-x-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>Real-time Syncing</span>
+                  </div>
+                </div>
+                <div className="p-6 md:p-10 space-y-6">
+                  {fieldLogs.map((log) => (
+                    <div key={log.id} className="flex space-x-6 group">
+                      <div className="flex flex-col items-center">
+                        <div className={`w-3 h-3 rounded-full mt-1.5 ${log.type === 'system' ? 'bg-point shadow-lg shadow-point/30' : 'bg-zinc-300'}`} />
+                        <div className="w-px flex-1 bg-zinc-100 dark:bg-zinc-800 group-last:hidden mt-3" />
+                      </div>
+                      <div className="flex-1 pb-6 group-last:pb-0">
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="text-[11px] font-black text-zinc-400 tracking-widest">{log.time}</span>
+                          <span className={`text-[9px] font-black px-2 py-0.5 rounded-md uppercase ${log.type === 'system' ? 'bg-point/10 text-point' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400'}`}>{log.type}</span>
+                        </div>
+                        <p className="text-sm font-bold text-zinc-700 dark:text-zinc-300 leading-relaxed">{log.text}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </section>
-            </>
+
+              {/* Checklist Pop-over (Quick Help) */}
+              <AnimatePresence>
+                {activeChecklist && (
+                  <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95, y: 30 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, y: 30 }}
+                      className="bg-white dark:bg-zinc-900 rounded-[40px] w-full max-w-lg shadow-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800"
+                    >
+                      <div className="p-8 border-b border-zinc-100 dark:border-zinc-800 flex justify-between items-center bg-zinc-50/50 dark:bg-zinc-800/20">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-10 h-10 rounded-2xl bg-white dark:bg-zinc-900 flex items-center justify-center shadow-sm">
+                            <ListTodo size={20} className="text-point" />
+                          </div>
+                          <h3 className="text-xl font-black tracking-tighter">
+                            {activeChecklist === 'printer' && "프린터 에러 조치 가이드"}
+                            {activeChecklist === 'network' && "네트워크 복구 체크리스트"}
+                            {activeChecklist === 'server' && "서버 점검 체크리스트"}
+                          </h3>
+                        </div>
+                        <button onClick={() => setActiveChecklist(null)} className="w-10 h-10 rounded-full bg-white dark:bg-zinc-900 flex items-center justify-center shadow-sm hover:scale-110 transition-transform">
+                          <X size={20} />
+                        </button>
+                      </div>
+                      <div className="p-8 space-y-4">
+                        {activeChecklist === 'printer' && [
+                          "헤드 부분 이물질 및 스티커 제거 확인",
+                          "전원을 끈 상태에서 전용 세정제로 헤드 청소",
+                          "라벨지 방향 및 가이드 고정 상태 재점검",
+                          "드라이버 재설치 및 테스트 페이지 출력"
+                        ].map((item, idx) => (
+                          <div key={idx} className="flex items-center space-x-3 p-5 bg-zinc-50 dark:bg-zinc-800/30 rounded-3xl border border-zinc-100 dark:border-zinc-800">
+                            <div className="w-6 h-6 rounded-full border-2 border-point/30 flex items-center justify-center text-[10px] font-black">{idx + 1}</div>
+                            <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300">{item}</span>
+                          </div>
+                        ))}
+                        {activeChecklist === 'network' && [
+                          "메인 스위칭 허브 전원 램프 점등 확인",
+                          "LAN 케이블 접촉 상태 전수 조사",
+                          "공유기/라우터 물리적 리셋 1회 실시",
+                          "현측 서브넷 IP 충돌 여부 체크"
+                        ].map((item, idx) => (
+                          <div key={idx} className="flex items-center space-x-3 p-5 bg-zinc-50 dark:bg-zinc-800/30 rounded-3xl border border-zinc-100 dark:border-zinc-800">
+                            <div className="w-6 h-6 rounded-full border-2 border-emerald-500/30 flex items-center justify-center text-[10px] font-black">{idx + 1}</div>
+                            <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300">{item}</span>
+                          </div>
+                        ))}
+                        {activeChecklist === 'server' && [
+                          "클라우드 인프라 메인 콘솔 상태 확인",
+                          "API Gateway 호출 성공률 실시간 모니터링",
+                          "DB 커넥션 풀 임계치 도달 여부 점검",
+                          "방화벽 정책 변경 이력 확인"
+                        ].map((item, idx) => (
+                          <div key={idx} className="flex items-center space-x-3 p-5 bg-zinc-50 dark:bg-zinc-800/30 rounded-3xl border border-zinc-100 dark:border-zinc-800">
+                            <div className="w-6 h-6 rounded-full border-2 border-blue-500/30 flex items-center justify-center text-[10px] font-black">{idx + 1}</div>
+                            <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300">{item}</span>
+                          </div>
+                        ))}
+                        <button
+                          onClick={() => {
+                            addFieldLog(`${activeChecklist} 조치 프로세스 완료`, 'system');
+                            setActiveChecklist(null);
+                            setActiveActionToast("체크리스트 조치가 기록되었습니다.");
+                          }}
+                          className="w-full mt-6 py-5 bg-point text-white rounded-[24px] font-black text-base shadow-xl active:scale-95 transition-all"
+                        >
+                          모든 단계 조치 완료 파악
+                        </button>
+                      </div>
+                    </motion.div>
+                  </div>
+                )}
+              </AnimatePresence>
+            </div>
           )}
 
           {activeCategory === 'dev' && (
