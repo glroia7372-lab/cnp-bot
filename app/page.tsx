@@ -491,6 +491,13 @@ function WorkView({ setIsGlobalChatOpen }: { setIsGlobalChatOpen: (open: boolean
     fee: '10,000,000',
     serviceDetail: '소프트웨어 개발 및 현장 운영 지원 전반'
   });
+  const [dashSettings, setDashSettings] = useState({
+    stats: true,
+    requests: true,
+    approvals: true,
+    drafts: true,
+    projects: true,
+  });
 
   const handleAiSmartFill = () => {
     if (!aiBrief) return;
@@ -608,22 +615,25 @@ function WorkView({ setIsGlobalChatOpen }: { setIsGlobalChatOpen: (open: boolean
                     className="w-full md:px-10 py-5 bg-white text-point rounded-3xl font-black text-base shadow-xl active:scale-95 transition-all flex items-center justify-center space-x-2"
                   >
                     <Plus size={20} />
-                    <span>신규 계약 제안하기</span>
+                    <span>계약서 초안 작성하기</span>
                   </button>
                 </div>
               </div>
 
-              <section className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                <StatBox icon={<FileText className="text-blue-500" size={18} />} label="내부 결제 진행" value="100건" />
-                <StatBox icon={<Layers className="text-zinc-500" size={18} />} label="요청자 검토 중" value="10건" />
-                <StatBox icon={<CheckCircle2 className="text-emerald-500" size={18} />} label="법무 검토 완료" value="23건" />
-                <StatBox icon={<Shield className="text-amber-500" size={18} />} label="인감 사용 신청" value="45건" />
-                <StatBox icon={<PenTool className="text-point" size={18} />} label="서명 진행 중" value="3건" />
-              </section>
+              {dashSettings.stats && (
+                <section className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                  <StatBox icon={<FileText className="text-blue-500" size={18} />} label="내부 결제 진행" value="100건" />
+                  <StatBox icon={<Layers className="text-zinc-500" size={18} />} label="요청자 검토 중" value="10건" />
+                  <StatBox icon={<CheckCircle2 className="text-emerald-500" size={18} />} label="법무 검토 완료" value="23건" />
+                  <StatBox icon={<Shield className="text-amber-500" size={18} />} label="인감 사용 신청" value="45건" />
+                  <StatBox icon={<PenTool className="text-point" size={18} />} label="서명 진행 중" value="3건" />
+                </section>
+              )}
 
               <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
                 {/* Left Column: Drafts & References */}
                 <div className="md:col-span-4 space-y-6">
+                  {dashSettings.drafts && (
                   <section className="bg-white dark:bg-zinc-900 rounded-[32px] border border-zinc-200 dark:border-zinc-800 overflow-hidden shadow-sm">
                     <div className="p-6 border-b border-zinc-50 dark:border-zinc-800 flex items-center justify-between">
                       <h3 className="font-black text-sm flex items-center space-x-2">
@@ -638,7 +648,9 @@ function WorkView({ setIsGlobalChatOpen }: { setIsGlobalChatOpen: (open: boolean
                       <LegalDraftItem title="현장 운영 대행 용역" date="24.08-01" />
                     </div>
                   </section>
+                  )}
 
+                  {dashSettings.requests && (
                   <section className="bg-white dark:bg-zinc-900 rounded-[32px] border border-zinc-200 dark:border-zinc-800 overflow-hidden shadow-sm">
                     <div className="p-6 border-b border-zinc-50 dark:border-zinc-800 flex items-center justify-between">
                       <h3 className="font-black text-sm flex items-center space-x-2">
@@ -652,10 +664,12 @@ function WorkView({ setIsGlobalChatOpen }: { setIsGlobalChatOpen: (open: boolean
                       <LegalApprovalItem title="데이터 센터 이용 계약" manager="이검토" date="2024-08-01" />
                     </div>
                   </section>
+                  )}
                 </div>
 
                 {/* Center Column: Global Review List & Participating Projects */}
                 <div className="md:col-span-5 space-y-6">
+                  {dashSettings.approvals && (
                   <section className="bg-white dark:bg-zinc-900 rounded-[32px] border border-zinc-200 dark:border-zinc-800 overflow-hidden shadow-sm flex flex-col">
                     <div className="p-6 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between bg-zinc-50/50 dark:bg-zinc-800/20">
                       <h3 className="font-black text-sm flex items-center space-x-2 tracking-tight">
@@ -678,7 +692,9 @@ function WorkView({ setIsGlobalChatOpen }: { setIsGlobalChatOpen: (open: boolean
                       </div>
                     </div>
                   </section>
+                  )}
 
+                  {dashSettings.projects && (
                   <section className="bg-white dark:bg-zinc-900 rounded-[32px] border border-zinc-200 dark:border-zinc-800 overflow-hidden shadow-sm flex flex-col">
                     <div className="p-6 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between bg-zinc-50/50 dark:bg-zinc-800/20">
                       <h3 className="font-black text-sm flex items-center space-x-2 tracking-tight">
@@ -700,10 +716,12 @@ function WorkView({ setIsGlobalChatOpen }: { setIsGlobalChatOpen: (open: boolean
                       </div>
                     </div>
                   </section>
+                  )}
                 </div>
 
                 {/* Right Column: Status & Direct Actions */}
                 <div className="md:col-span-3 space-y-6">
+                  {dashSettings.requests && (
                   <section className="bg-white dark:bg-zinc-900 rounded-[32px] border border-zinc-200 dark:border-zinc-800 p-6 shadow-sm">
                     <div className="flex items-center justify-between mb-6">
                       <h3 className="font-black text-sm">나의 요청 현황</h3>
@@ -716,6 +734,7 @@ function WorkView({ setIsGlobalChatOpen }: { setIsGlobalChatOpen: (open: boolean
                       <LegalStatusCard label="전자서명 진행 중" count={3} color="text-blue-500" />
                     </div>
                   </section>
+                  )}
 
                 </div>
               </div>
@@ -780,11 +799,31 @@ function WorkView({ setIsGlobalChatOpen }: { setIsGlobalChatOpen: (open: boolean
                       </div>
                       <div className="p-8 space-y-6">
                         <div className="space-y-4">
-                          <SettingsToggle label="검토 현황 통계 (Stats)" defaultChecked />
-                          <SettingsToggle label="나의 요청 현황 (Requests)" defaultChecked />
-                          <SettingsToggle label="결제 대기 중 요청 (Approvals)" defaultChecked />
-                          <SettingsToggle label="임시 저장 리스트 (Drafts)" />
-                          <SettingsToggle label="참조 프로젝트 알림" />
+                          <SettingsToggle
+                            label="검토 현황 통계 (Stats)"
+                            checked={dashSettings.stats}
+                            onChange={(v: boolean) => setDashSettings(s => ({ ...s, stats: v }))}
+                          />
+                          <SettingsToggle
+                            label="나의 요청 현황 (Requests)"
+                            checked={dashSettings.requests}
+                            onChange={(v: boolean) => setDashSettings(s => ({ ...s, requests: v }))}
+                          />
+                          <SettingsToggle
+                            label="결제 대기 중 요청 (Approvals)"
+                            checked={dashSettings.approvals}
+                            onChange={(v: boolean) => setDashSettings(s => ({ ...s, approvals: v }))}
+                          />
+                          <SettingsToggle
+                            label="임시 저장 리스트 (Drafts)"
+                            checked={dashSettings.drafts}
+                            onChange={(v: boolean) => setDashSettings(s => ({ ...s, drafts: v }))}
+                          />
+                          <SettingsToggle
+                            label="참여 프로젝트 (Projects)"
+                            checked={dashSettings.projects}
+                            onChange={(v: boolean) => setDashSettings(s => ({ ...s, projects: v }))}
+                          />
                         </div>
                         <div className="flex gap-4 pt-4 mt-6">
                           <button onClick={() => setIsDashSettingsOpen(false)} className="flex-1 py-4 bg-zinc-100 dark:bg-zinc-800 rounded-2xl text-sm font-bold">취소</button>
@@ -1216,22 +1255,77 @@ function AdminQuickBtn({ icon, label, color, onClick }: any) {
 function LibraryView() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [leaveForm, setLeaveForm] = useState({
+    type: '연차',
+    startDate: '',
+    endDate: '',
+    reason: '',
+  });
+  const [leaveSubmitted, setLeaveSubmitted] = useState(false);
+  const [corpForm, setCorpForm] = useState({
+    date: '',
+    amount: '',
+    merchant: '',
+    purpose: '',
+  });
+  const [corpSubmitted, setCorpSubmitted] = useState(false);
+  const [suppliesForm, setSuppliesForm] = useState({
+    category: '사무용품',
+    item: '',
+    quantity: 1,
+    reason: '',
+  });
+  const [suppliesSubmitted, setSuppliesSubmitted] = useState(false);
+  const [leaveHistory, setLeaveHistory] = useState<any[]>([]);
+  const [corpHistory, setCorpHistory] = useState<any[]>([]);
+  const [suppliesHistory, setSuppliesHistory] = useState<any[]>([]);
 
   const allDocs = [
-    { title: "플립패스_운영_가이드_v2.4.pdf", category: "Dev", date: "2시간 전", tags: ["Manual"] },
-    { title: "시스템_아키텍처_상세_v1.2.pdf", category: "Dev", date: "어제", tags: ["Architecture"] },
-    { title: "Bixolon_프린터_장애_조치.docx", category: "Dev", date: "3일 전", tags: ["Hardware"] },
-    { title: "개인정보_처리_방침_2026.pdf", category: "Legal", date: "1주 전", tags: ["Privacy"] },
-    { title: "행사_대행_계약서_표준안.docx", category: "Legal", date: "어제", tags: ["Contract"] },
-    { title: "사내_보안_수칙_공지.pdf", category: "Legal", date: "2주 전", tags: ["Security"] },
-    { title: "2026_복리후생_변경_안내.docx", category: "HR", date: "어제", tags: ["Welfare"] },
-    { title: "현장_스태프_응대_매뉴얼.pdf", category: "HR", date: "3일 전", tags: ["Staff"] },
-    { title: "출장비_정산_가이드라인.pdf", category: "HR", date: "1개월 전", tags: ["Finance"] },
+    {
+      id: 'flippass-manual',
+      title: "플립패스 매뉴얼",
+      category: "매뉴얼",
+      date: "상시",
+      tags: ["FlipPass", "Manual"],
+      description: "플립패스(FlipPass) 서비스 개요와 내부 운영 매뉴얼을 한 번에 볼 수 있는 안내입니다.",
+      prompt: "플립패스 서비스와 내부 운영 매뉴얼 전체 내용을 간단히 요약해서 설명해줘."
+    },
+    {
+      id: 'leave-request',
+      title: "연차/휴가 신청",
+      category: "인사",
+      date: "상시",
+      tags: ["HR", "Leave"],
+      description: "연차·휴가 신청 절차와 결재 흐름, 유의사항을 정리한 가이드입니다.",
+      prompt: "우리 회사 연차/휴가 신청 절차랑 결재 흐름, 자주 묻는 질문을 정리해서 알려줘."
+    },
+    {
+      id: 'corp-card',
+      title: "법인카드 정산 안내",
+      category: "재무",
+      date: "상시",
+      tags: ["Finance", "Card"],
+      description: "법인카드 사용 후 정산 절차, 영수증 처리 기준, 제출 방법을 안내합니다.",
+      prompt: "법인카드 사용 후 정산 절차와 증빙 기준, 제출 마감 기한을 단계별로 설명해줘."
+    },
+    {
+      id: 'supplies-request',
+      title: "소모품 신청",
+      category: "총무",
+      date: "상시",
+      tags: ["Admin", "Supplies"],
+      description: "사무용 소모품(장비 포함) 신청 가능 품목과 신청/승인/수령 절차를 안내합니다.",
+      prompt: "사무용 소모품(장비 포함) 신청 절차와 승인 기준, 자주 묻는 질문을 알려줘."
+    },
   ];
 
   const filteredDocs = searchQuery
     ? allDocs.filter(doc => doc.title.toLowerCase().includes(searchQuery.toLowerCase()))
     : [];
+
+  const selectedDoc = allDocs[selectedIndex] || allDocs[0];
 
   return (
     <div className="max-w-4xl mx-auto w-full space-y-8 pb-10">
@@ -1263,7 +1357,17 @@ function LibraryView() {
               <div className="divide-y divide-zinc-50 dark:divide-zinc-800">
                 {filteredDocs.length > 0 ? (
                   filteredDocs.map((doc, idx) => (
-                    <div key={idx} className="p-4 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors cursor-pointer flex justify-between items-center group">
+                    <button
+                      key={doc.id || idx}
+                      type="button"
+                      onClick={() => {
+                        const index = allDocs.findIndex(d => d.id === doc.id);
+                        setSelectedIndex(index >= 0 ? index : 0);
+                        setIsSearching(false);
+                        setIsDetailOpen(true);
+                      }}
+                      className="w-full text-left p-4 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors cursor-pointer flex justify-between items-center group border-b last:border-b-0 border-transparent"
+                    >
                       <div className="flex items-center space-x-3">
                         <FileText size={16} className="text-zinc-400 group-hover:text-point transition-colors" />
                         <div>
@@ -1272,7 +1376,7 @@ function LibraryView() {
                         </div>
                       </div>
                       <ChevronRight size={14} className="text-zinc-300" />
-                    </div>
+                    </button>
                   ))
                 ) : (
                   <div className="p-10 text-center">
@@ -1286,48 +1390,646 @@ function LibraryView() {
       </div>
 
       <div className="space-y-6">
-        <h4 className="text-sm font-bold text-zinc-400 uppercase tracking-widest">부서별 핵심 지식고</h4>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <LibraryDepartmentCard
-            title="Development"
-            icon={<Terminal className="text-blue-500" size={24} />}
-            count={32}
-            docs={allDocs.filter(d => d.category === 'Dev').slice(0, 2)}
-          />
-          <LibraryDepartmentCard
-            title="Legal & Privacy"
-            icon={<Gavel className="text-point" size={24} />}
-            count={18}
-            docs={allDocs.filter(d => d.category === 'Legal').slice(0, 2)}
-          />
-          <LibraryDepartmentCard
-            title="HR & Org"
-            icon={<Users className="text-orange-500" size={24} />}
-            count={24}
-            docs={allDocs.filter(d => d.category === 'HR').slice(0, 2)}
-          />
+        <h4 className="text-sm font-bold text-zinc-400 uppercase tracking-widest">바로가기</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <button
+            type="button"
+            onClick={() => { setSelectedIndex(0); setIsDetailOpen(true); }}
+            className="text-left p-6 rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all"
+          >
+            <div className="flex items-start justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 rounded-2xl bg-point/10 flex items-center justify-center text-point">
+                  <BookOpen size={20} />
+                </div>
+                <div>
+                  <p className="font-bold">플립패스 매뉴얼</p>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">플립패스 운영/사용 관련 기본 매뉴얼</p>
+                </div>
+              </div>
+              <ArrowUpRight size={16} className="text-zinc-300" />
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <span className="px-2 py-1 rounded-lg text-[10px] font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-500">매뉴얼</span>
+              <span className="px-2 py-1 rounded-lg text-[10px] font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-500">FlipPass</span>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => { setSelectedIndex(1); setIsDetailOpen(true); }}
+            className="text-left p-6 rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all"
+          >
+            <div className="flex items-start justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center text-orange-500">
+                  <CalendarClock size={20} />
+                </div>
+                <div>
+                  <p className="font-bold">연차/휴가 신청</p>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">연차·휴가 신청/승인 흐름 및 유의사항</p>
+                </div>
+              </div>
+              <ArrowUpRight size={16} className="text-zinc-300" />
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <span className="px-2 py-1 rounded-lg text-[10px] font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-500">인사</span>
+              <span className="px-2 py-1 rounded-lg text-[10px] font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-500">신청</span>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => { setSelectedIndex(2); setIsDetailOpen(true); }}
+            className="text-left p-6 rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all"
+          >
+            <div className="flex items-start justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                  <CreditCard size={20} />
+                </div>
+                <div>
+                  <p className="font-bold">법인카드 정산 안내</p>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">영수증 처리, 증빙 기준, 제출 방식</p>
+                </div>
+              </div>
+              <ArrowUpRight size={16} className="text-zinc-300" />
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <span className="px-2 py-1 rounded-lg text-[10px] font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-500">재무</span>
+              <span className="px-2 py-1 rounded-lg text-[10px] font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-500">정산</span>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => { setSelectedIndex(3); setIsDetailOpen(true); }}
+            className="text-left p-6 rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all"
+          >
+            <div className="flex items-start justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500">
+                  <Package size={20} />
+                </div>
+                <div>
+                  <p className="font-bold">소모품 신청</p>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">사무용 소모품 신청 절차 및 수령 안내</p>
+                </div>
+              </div>
+              <ArrowUpRight size={16} className="text-zinc-300" />
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <span className="px-2 py-1 rounded-lg text-[10px] font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-500">총무</span>
+              <span className="px-2 py-1 rounded-lg text-[10px] font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-500">신청</span>
+            </div>
+          </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
-        <div>
-          <h4 className="text-sm font-bold text-zinc-400 uppercase tracking-widest mb-4">카테고리별 탐색</h4>
-          <div className="grid grid-cols-2 gap-3">
-            <LibraryCategoryItem icon={<Cpu size={18} />} label="시스템 아키" count={8} color="bg-blue-500" />
-            <LibraryCategoryItem icon={<Shield size={18} />} label="보안/개인정보" count={12} color="bg-emerald-500" />
-            <LibraryCategoryItem icon={<Scale size={18} />} label="계약/법무" count={15} color="bg-point" />
-            <LibraryCategoryItem icon={<UserCheck size={18} />} label="인사/매뉴얼" count={22} color="bg-orange-500" />
+      {/* 신청/정산 현황 요약 */}
+      <div className="pt-4 space-y-4">
+        <h4 className="text-sm font-bold text-zinc-400 uppercase tracking-widest">신청/정산 현황</h4>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+            <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">연차/휴가 신청</p>
+            {leaveHistory.length === 0 ? (
+              <p className="text-[11px] text-zinc-400">아직 신청 내역이 없습니다.</p>
+            ) : (
+              <div className="space-y-1 max-h-40 overflow-y-auto">
+                {leaveHistory.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between py-1 border-b last:border-b-0 border-zinc-100 dark:border-zinc-800"
+                  >
+                    <div className="space-y-0.5">
+                      <p className="text-[11px] font-medium text-zinc-800 dark:text-zinc-100">
+                        {item.type} · {item.startDate} ~ {item.endDate}
+                      </p>
+                      {item.reason && (
+                        <p className="text-[10px] text-zinc-500 dark:text-zinc-400 truncate">
+                          사유: {item.reason}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          item.status === '승인'
+                            ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-100'
+                            : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-100'
+                        }`}
+                      >
+                        {item.status}
+                      </span>
+                      {item.status !== '승인' && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setLeaveHistory((prev) =>
+                              prev.map((h) => (h.id === item.id ? { ...h, status: '승인' } : h))
+                            )
+                          }
+                          className="px-2 py-0.5 rounded-lg border border-emerald-200 dark:border-emerald-700 text-[10px] text-emerald-700 dark:text-emerald-100 hover:bg-emerald-50 dark:hover:bg-emerald-900/30"
+                        >
+                          승인
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        </div>
-        <div>
-          <h4 className="text-sm font-bold text-zinc-400 uppercase tracking-widest mb-4">최근 업데이트 문서</h4>
-          <div className="space-y-3">
-            {allDocs.slice(0, 3).map((doc, idx) => (
-              <RecentDocItem key={idx} title={doc.title} date={doc.date} category={doc.category} />
-            ))}
+
+          <div className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+            <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">법인카드 정산</p>
+            {corpHistory.length === 0 ? (
+              <p className="text-[11px] text-zinc-400">아직 정산 내역이 없습니다.</p>
+            ) : (
+              <div className="space-y-1 max-h-40 overflow-y-auto">
+                {corpHistory.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between py-1 border-b last:border-b-0 border-zinc-100 dark:border-zinc-800"
+                  >
+                    <div className="space-y-0.5">
+                      <p className="text-[11px] font-medium text-zinc-800 dark:text-zinc-100">
+                        {item.date} · {Number(item.amount).toLocaleString()}원
+                      </p>
+                      <p className="text-[10px] text-zinc-500 dark:text-zinc-400 truncate">
+                        {item.merchant} · {item.purpose || '용도 미입력'}
+                      </p>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          item.status === '승인'
+                            ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-100'
+                            : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-100'
+                        }`}
+                      >
+                        {item.status}
+                      </span>
+                      {item.status !== '승인' && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setCorpHistory((prev) =>
+                              prev.map((h) => (h.id === item.id ? { ...h, status: '승인' } : h))
+                            )
+                          }
+                          className="px-2 py-0.5 rounded-lg border border-emerald-200 dark:border-emerald-700 text-[10px] text-emerald-700 dark:text-emerald-100 hover:bg-emerald-50 dark:hover:bg-emerald-900/30"
+                        >
+                          승인
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+            <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">소모품 신청</p>
+            {suppliesHistory.length === 0 ? (
+              <p className="text-[11px] text-zinc-400">아직 신청 내역이 없습니다.</p>
+            ) : (
+              <div className="space-y-1 max-h-40 overflow-y-auto">
+                {suppliesHistory.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between py-1 border-b last:border-b-0 border-zinc-100 dark:border-zinc-800"
+                  >
+                    <div className="space-y-0.5">
+                      <p className="text-[11px] font-medium text-zinc-800 dark:text-zinc-100">
+                        {item.category} · {item.item} ({item.quantity}개)
+                      </p>
+                      {item.reason && (
+                        <p className="text-[10px] text-zinc-500 dark:text-zinc-400 truncate">
+                          비고: {item.reason}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          item.status === '승인'
+                            ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-100'
+                            : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-100'
+                        }`}
+                      >
+                        {item.status}
+                      </span>
+                      {item.status !== '승인' && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setSuppliesHistory((prev) =>
+                              prev.map((h) => (h.id === item.id ? { ...h, status: '승인' } : h))
+                            )
+                          }
+                          className="px-2 py-0.5 rounded-lg border border-emerald-200 dark:border-emerald-700 text-[10px] text-emerald-700 dark:text-emerald-100 hover:bg-emerald-50 dark:hover:bg-emerald-900/30"
+                        >
+                          승인
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      {/* 상세 보기 모달 */}
+      <AnimatePresence>
+        {isDetailOpen && (
+          <div className="fixed inset-0 z-[90] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="w-full max-w-lg rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden"
+            >
+              <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-900/60">
+                <div className="flex items-center space-x-2">
+                  <LibraryIcon size={18} className="text-point" />
+                  <div>
+                    <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">라이브러리</p>
+                    <p className="text-sm font-semibold">{selectedDoc.title}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setIsDetailOpen(false)}
+                  className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <div className="px-6 py-5 space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="px-2 py-1 rounded-lg text-[10px] font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-500">
+                    {selectedDoc.category} · {selectedDoc.date}
+                  </span>
+                  <div className="flex flex-wrap gap-1">
+                    {selectedDoc.tags.map((tag: string) => (
+                      <span
+                        key={tag}
+                        className="px-2 py-0.5 rounded-lg text-[10px] bg-zinc-100 dark:bg-zinc-800 text-zinc-500"
+                      >
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <p className="text-sm text-zinc-700 dark:text-zinc-200 leading-relaxed">
+                  {selectedDoc.description}
+                </p>
+
+                {/* 플립패스 매뉴얼 전용 가짜 본문 */}
+                {selectedDoc.id === 'flippass-manual' && (
+                  <div className="mt-2 space-y-3 text-xs text-zinc-700 dark:text-zinc-200 leading-relaxed">
+                    <div>
+                      <p className="font-semibold text-zinc-900 dark:text-zinc-50 mb-1">1. 플립패스 개요</p>
+                      <p>
+                        플립패스는 행사·학회·세미나 참가자를 위한 전자 등록 및 출입 관리 솔루션입니다.
+                        사전 등록, 현장 등록, 결제, 출입증 발급, 통계 리포트까지 한 번에 관리할 수 있도록 설계되었습니다.
+                      </p>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-zinc-900 dark:text-zinc-50 mb-1">2. 주요 운영 역할</p>
+                      <ul className="list-disc pl-4 space-y-1">
+                        <li>운영 총괄: 전체 일정 관리 및 이슈 최종 의사결정</li>
+                        <li>등록 데스크: 참가자 체크인, 명찰 발급, 현장 등록 처리</li>
+                        <li>키오스크 담당: 무인 등록기 설치/점검 및 오류 조치</li>
+                        <li>데이터 담당: 리포트 추출, 현황 대시보드 공유</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-zinc-900 dark:text-zinc-50 mb-1">3. 운영 기본 플로우</p>
+                      <ol className="list-decimal pl-4 space-y-1">
+                        <li>행사 생성 및 플립패스 기본 설정 (행사명, 일정, 장소, 티켓 유형 등)</li>
+                        <li>사전 등록 페이지 오픈 및 알림톡/문자 발송</li>
+                        <li>행사 당일, 등록 데스크와 키오스크에서 참가자 체크인</li>
+                        <li>현장 결제(필요 시) 처리 및 영수증/명찰 출력</li>
+                        <li>행사 종료 후 참가자 통계 및 리포트 다운로드</li>
+                      </ol>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-zinc-900 dark:text-zinc-50 mb-1">4. 현장 체크리스트 (요약)</p>
+                      <ul className="list-disc pl-4 space-y-1">
+                        <li>키오스크 전원 및 네트워크 연결 상태 확인</li>
+                        <li>프린터 용지·리본 잔량 및 예비 소모품 확보</li>
+                        <li>등록 데스크용 노트북, 명찰 케이스, 목걸이 줄 준비</li>
+                        <li>VIP/내빈 리스트 최신 버전 확인 및 별도 표시</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-zinc-900 dark:text-zinc-50 mb-1">5. 자주 발생하는 이슈 예시</p>
+                      <ul className="list-disc pl-4 space-y-1">
+                        <li>사전 등록자 정보와 명찰 이름 오타 → 현장 수정 방법 안내</li>
+                        <li>키오스크 프린터 용지 걸림 → 용지 재장착 및 시험 출력 절차</li>
+                        <li>현장 결제 실패 → 재시도 및 수기 결제 전환 기준</li>
+                      </ul>
+                    </div>
+                  </div>
+                )}
+
+                {/* 연차/휴가 신청 전용 간단 신청 폼 */}
+                {selectedDoc.id === 'leave-request' && (
+                  <div className="mt-4 space-y-3">
+                    <p className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
+                      아래 양식을 작성하면 연차/휴가 신청 내역이 이 화면에 기록됩니다.
+                    </p>
+                    <form
+                      className="space-y-3 text-xs"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        if (!leaveForm.startDate || !leaveForm.endDate) return;
+                        const newItem = {
+                          id: Date.now(),
+                          ...leaveForm,
+                          createdAt: new Date().toISOString(),
+                          status: '신청',
+                        };
+                        setLeaveHistory((prev) => [newItem, ...prev]);
+                        setLeaveSubmitted(true);
+                      }}
+                    >
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <label className="block text-[11px] text-zinc-500 dark:text-zinc-400">구분</label>
+                          <select
+                            className="w-full px-2 py-2 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700"
+                            value={leaveForm.type}
+                            onChange={(e) => setLeaveForm({ ...leaveForm, type: e.target.value })}
+                          >
+                            <option value="연차">연차</option>
+                            <option value="반차">반차</option>
+                            <option value="병가">병가</option>
+                            <option value="경조사">경조사</option>
+                          </select>
+                        </div>
+                        <div className="space-y-1">
+                          <label className="block text-[11px] text-zinc-500 dark:text-zinc-400">기간</label>
+                          <div className="flex items-center space-x-1">
+                            <input
+                              type="date"
+                              className="w-1/2 px-2 py-2 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700"
+                              value={leaveForm.startDate}
+                              onChange={(e) => setLeaveForm({ ...leaveForm, startDate: e.target.value })}
+                            />
+                            <span className="text-[11px] text-zinc-500">~</span>
+                            <input
+                              type="date"
+                              className="w-1/2 px-2 py-2 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700"
+                              value={leaveForm.endDate}
+                              onChange={(e) => setLeaveForm({ ...leaveForm, endDate: e.target.value })}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-[11px] text-zinc-500 dark:text-zinc-400">사유</label>
+                        <textarea
+                          rows={3}
+                          className="w-full px-2 py-2 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 resize-none"
+                          placeholder="예: 가족 행사 참석으로 인한 연차 사용"
+                          value={leaveForm.reason}
+                          onChange={(e) => setLeaveForm({ ...leaveForm, reason: e.target.value })}
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        className="w-full mt-1 py-2 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-semibold text-xs hover:opacity-90 transition-all disabled:opacity-40"
+                        disabled={!leaveForm.startDate || !leaveForm.endDate}
+                      >
+                        연차/휴가 신청 기록하기
+                      </button>
+                    </form>
+
+                    {leaveSubmitted && (
+                      <div className="mt-3 p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700 text-[11px] text-emerald-800 dark:text-emerald-100 space-y-1">
+                        <p className="font-semibold">신청 내역이 기록되었습니다.</p>
+                        <p>구분: {leaveForm.type}</p>
+                        <p>기간: {leaveForm.startDate} ~ {leaveForm.endDate}</p>
+                        {leaveForm.reason && <p>사유: {leaveForm.reason}</p>}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 법인카드 정산 안내 및 정산 입력 폼 */}
+                {selectedDoc.id === 'corp-card' && (
+                  <div className="mt-4 space-y-3">
+                    <div className="space-y-1 text-xs text-zinc-700 dark:text-zinc-200 leading-relaxed">
+                      <p className="font-semibold text-zinc-900 dark:text-zinc-50">1. 기본 원칙 (예시)</p>
+                      <ul className="list-disc pl-4 space-y-1">
+                        <li>법인카드는 업무 목적에 한해서만 사용합니다.</li>
+                        <li>사용일 기준 익월 5영업일 이내에 정산을 완료해야 합니다.</li>
+                        <li>모든 내역은 영수증(세금계산서 포함)과 함께 증빙이 필요합니다.</li>
+                      </ul>
+                      <p className="font-semibold text-zinc-900 dark:text-zinc-50 mt-2">2. 정산 기준 (예시)</p>
+                      <ul className="list-disc pl-4 space-y-1">
+                        <li>식대: 1인 3만원, 4인 이하 팀 식사 기준 (초과분은 본인 부담 가능)</li>
+                        <li>교통비: 대중교통 우선, 택시는 야간/장비 이동 등 사유 기재 필수</li>
+                        <li>접대비: 사전 승인 받은 건에 한해 사용 가능, 참석자와 목적 명시</li>
+                      </ul>
+                    </div>
+
+                    <p className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 mt-1">
+                      아래 양식은 실제 그룹웨어 대신, 이 화면 안에서 정산 내역을 기록해 보는 기능입니다.
+                    </p>
+
+                    <form
+                      className="space-y-3 text-xs"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        if (!corpForm.date || !corpForm.amount || !corpForm.merchant) return;
+                        const newItem = {
+                          id: Date.now(),
+                          ...corpForm,
+                          createdAt: new Date().toISOString(),
+                          status: '신청',
+                        };
+                        setCorpHistory((prev) => [newItem, ...prev]);
+                        setCorpSubmitted(true);
+                      }}
+                    >
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <label className="block text-[11px] text-zinc-500 dark:text-zinc-400">사용일자</label>
+                          <input
+                            type="date"
+                            className="w-full px-2 py-2 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700"
+                            value={corpForm.date}
+                            onChange={(e) => setCorpForm({ ...corpForm, date: e.target.value })}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="block text-[11px] text-zinc-500 dark:text-zinc-400">금액 (원)</label>
+                          <input
+                            type="number"
+                            min={0}
+                            className="w-full px-2 py-2 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700"
+                            placeholder="예: 58000"
+                            value={corpForm.amount}
+                            onChange={(e) => setCorpForm({ ...corpForm, amount: e.target.value })}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <label className="block text-[11px] text-zinc-500 dark:text-zinc-400">사용처</label>
+                          <input
+                            type="text"
+                            className="w-full px-2 py-2 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700"
+                            placeholder="예: OO식당, OO주유소"
+                            value={corpForm.merchant}
+                            onChange={(e) => setCorpForm({ ...corpForm, merchant: e.target.value })}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="block text-[11px] text-zinc-500 dark:text-zinc-400">사용 용도</label>
+                          <input
+                            type="text"
+                            className="w-full px-2 py-2 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700"
+                            placeholder="예: 프로젝트 미팅, 현장 이동"
+                            value={corpForm.purpose}
+                            onChange={(e) => setCorpForm({ ...corpForm, purpose: e.target.value })}
+                          />
+                        </div>
+                      </div>
+
+                      <button
+                        type="submit"
+                        className="w-full mt-1 py-2 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-semibold text-xs hover:opacity-90 transition-all disabled:opacity-40"
+                        disabled={!corpForm.date || !corpForm.amount || !corpForm.merchant}
+                      >
+                        법인카드 정산 내역 기록하기
+                      </button>
+                    </form>
+
+                    {corpSubmitted && (
+                      <div className="mt-3 p-3 rounded-2xl bg-sky-50 dark:bg-sky-900/20 border border-sky-200 dark:border-sky-700 text-[11px] text-sky-800 dark:text-sky-100 space-y-1">
+                        <p className="font-semibold">정산 내역이 기록되었습니다.</p>
+                        <p>사용일자: {corpForm.date}</p>
+                        <p>금액: {Number(corpForm.amount).toLocaleString()}원</p>
+                        <p>사용처: {corpForm.merchant}</p>
+                        {corpForm.purpose && <p>사용 용도: {corpForm.purpose}</p>}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 소모품 신청 전용 신청 폼 */}
+                {selectedDoc.id === 'supplies-request' && (
+                  <div className="mt-4 space-y-3">
+                    <p className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
+                      아래 양식은 실제 자산관리 시스템 대신, 이 화면 안에서 소모품 신청 내역을 기록해 보는 기능입니다.
+                    </p>
+
+                    <form
+                      className="space-y-3 text-xs"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        if (!suppliesForm.item || !suppliesForm.quantity) return;
+                        const newItem = {
+                          id: Date.now(),
+                          ...suppliesForm,
+                          createdAt: new Date().toISOString(),
+                          status: '신청',
+                        };
+                        setSuppliesHistory((prev) => [newItem, ...prev]);
+                        setSuppliesSubmitted(true);
+                      }}
+                    >
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <label className="block text-[11px] text-zinc-500 dark:text-zinc-400">카테고리</label>
+                          <select
+                            className="w-full px-2 py-2 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700"
+                            value={suppliesForm.category}
+                            onChange={(e) => setSuppliesForm({ ...suppliesForm, category: e.target.value })}
+                          >
+                            <option value="사무용품">사무용품</option>
+                            <option value="IT장비">IT장비</option>
+                            <option value="현장소모품">현장소모품</option>
+                          </select>
+                        </div>
+                        <div className="space-y-1">
+                          <label className="block text-[11px] text-zinc-500 dark:text-zinc-400">수량</label>
+                          <input
+                            type="number"
+                            min={1}
+                            className="w-full px-2 py-2 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700"
+                            value={suppliesForm.quantity}
+                            onChange={(e) => setSuppliesForm({ ...suppliesForm, quantity: Number(e.target.value) || 1 })}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="block text-[11px] text-zinc-500 dark:text-zinc-400">신청 품목</label>
+                        <input
+                          type="text"
+                          className="w-full px-2 py-2 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700"
+                          placeholder="예: A4용지, 볼펜 세트, USB 허브"
+                          value={suppliesForm.item}
+                          onChange={(e) => setSuppliesForm({ ...suppliesForm, item: e.target.value })}
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="block text-[11px] text-zinc-500 dark:text-zinc-400">사용 용도 / 비고</label>
+                        <textarea
+                          rows={3}
+                          className="w-full px-2 py-2 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 resize-none"
+                          placeholder="예: 팀 회의실 비치용, 현장 운영용 예비 소모품 등"
+                          value={suppliesForm.reason}
+                          onChange={(e) => setSuppliesForm({ ...suppliesForm, reason: e.target.value })}
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
+                        className="w-full mt-1 py-2 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-semibold text-xs hover:opacity-90 transition-all disabled:opacity-40"
+                        disabled={!suppliesForm.item || !suppliesForm.quantity}
+                      >
+                        소모품 신청 내역 기록하기
+                      </button>
+                    </form>
+
+                    {suppliesSubmitted && (
+                      <div className="mt-3 p-3 rounded-2xl bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-700 text-[11px] text-violet-800 dark:text-violet-100 space-y-1">
+                        <p className="font-semibold">소모품 신청 내역이 기록되었습니다.</p>
+                        <p>카테고리: {suppliesForm.category}</p>
+                        <p>신청 품목: {suppliesForm.item}</p>
+                        <p>수량: {suppliesForm.quantity}개</p>
+                        {suppliesForm.reason && <p>사용 용도/비고: {suppliesForm.reason}</p>}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <div className="mt-2 space-y-2">
+                  <p className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
+                    챗봇에 그대로 붙여넣어 물어볼 수 있는 추천 질문입니다.
+                  </p>
+                  <div className="px-3 py-3 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-dashed border-zinc-200 dark:border-zinc-700 text-xs text-zinc-800 dark:text-zinc-100">
+                    {selectedDoc.prompt}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -1748,13 +2450,12 @@ function LegalNotifItem({ title, date, isNew }: any) {
   );
 }
 
-function SettingsToggle({ label, defaultChecked }: { label: string, defaultChecked?: boolean }) {
-  const [checked, setChecked] = useState(defaultChecked || false);
+function SettingsToggle({ label, checked, onChange }: { label: string, checked: boolean, onChange: (value: boolean) => void }) {
   return (
     <div className="flex items-center justify-between p-5 bg-zinc-50 dark:bg-zinc-800/30 rounded-3xl border border-zinc-100 dark:border-zinc-800/50">
       <span className="text-xs font-black text-zinc-600 dark:text-zinc-300">{label}</span>
       <button
-        onClick={() => setChecked(!checked)}
+        onClick={() => onChange(!checked)}
         className={`w-12 h-6 rounded-full transition-all relative ${checked ? 'bg-point shadow-lg shadow-point/20' : 'bg-zinc-300 dark:bg-zinc-700'}`}
       >
         <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${checked ? 'left-7 shadow-sm' : 'left-1'}`} />

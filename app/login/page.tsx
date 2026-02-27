@@ -28,7 +28,7 @@ export default function LoginPage() {
                         CNP <span className="text-[#D95204]">BOT</span>
                     </h1>
                     <p className="text-white/50 text-sm">
-                        {isLogin ? "Welcome back. Please login to your account." : "Join us today. Create your account."}
+                        {isLogin ? "다시 오신 걸 환영합니다. 계정으로 로그인해 주세요." : "지금 가입하고 계정을 만들어 보세요."}
                     </p>
                 </div>
 
@@ -39,21 +39,21 @@ export default function LoginPage() {
                 <form className="space-y-6">
                     <div>
                         <label className="block text-xs font-semibold text-white/40 uppercase tracking-wider mb-2 ml-1">
-                            Email Address
+                            이메일
                         </label>
                         <input
                             id="email"
                             name="email"
                             type="email"
                             required
-                            placeholder="name@company.com"
+                            placeholder="예: name@company.com"
                             className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-[#D95204]/50 transition-all"
                         />
                     </div>
 
                     <div className="relative">
                         <label className="block text-xs font-semibold text-white/40 uppercase tracking-wider mb-2 ml-1">
-                            Password
+                            비밀번호
                         </label>
                         <div className="relative">
                             <input
@@ -83,7 +83,7 @@ export default function LoginPage() {
                             {isPending ? (
                                 <Loader2 className="animate-spin mr-2" size={20} />
                             ) : null}
-                            {isLogin ? "Sign In" : "Sign Up"}
+                            {isLogin ? "로그인" : "회원가입"}
                         </button>
 
                         <button
@@ -91,7 +91,7 @@ export default function LoginPage() {
                             onClick={() => setIsLogin(!isLogin)}
                             className="w-full py-2 text-white/40 text-sm hover:text-white transition-colors"
                         >
-                            {isLogin ? "Don't have an account? Sign Up" : "Already have an account? Sign In"}
+                            {isLogin ? "계정이 없으신가요? 회원가입" : "이미 계정이 있으신가요? 로그인"}
                         </button>
                     </div>
                 </form>
